@@ -1,24 +1,24 @@
 package model;
 
 public class MemberVO {
-	private String id;
+	private String member_id;
 	private String password;
 	private String name;
 	public MemberVO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public MemberVO(String id, String password, String name) {
+	public MemberVO(String member_id, String password, String name) {
 		super();
-		this.id = id;
+		this.member_id = member_id;
 		this.password = password;
 		this.name = name;
 	}
-	public String getId() {
-		return id;
+	public String getMember_id() {
+		return member_id;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setMember_id(String member_id) {
+		this.member_id = member_id;
 	}
 	public String getPassword() {
 		return password;
@@ -34,8 +34,7 @@ public class MemberVO {
 	}
 	@Override
 	public String toString() {
-		return "MemberVO [id=" + id + ", password=" + password + ", name="
-				+ name + "]";
+		return "MemberVO [member_id=" + member_id + ", password=" + password + ", name=" + name + "]";
 	}
 	
 }

@@ -34,7 +34,7 @@ public class BoardDAO {
 	}	
 	/**
 	 * 페이지 번호에 해당하는 게시물 목록 리스트를 반환하는 메서드 
-	 * @param pageNo
+	 * @param pageboard_no
 	 * @return
 	 * @throws SQLException
 	 */
@@ -46,28 +46,28 @@ public class BoardDAO {
 		try{
 			con=getConnection(); 
 			StringBuilder sql=new StringBuilder();
-			sql.append("SELECT b.no,b.category,b.title,b.time_posted,b.hits,b.ghits,b.id,m.name FROM(");
-			sql.append("SELECT row_number() over(order by no desc) as rnum,no,category,title,");
-			sql.append("to_char(time_posted,'YYYY.MM.DD') as time_posted,hits,ghits,id FROM ");
-			sql.append("board_login_inst");
-			sql.append(") b,board_member m where b.id=m.id and rnum between ? and ? ");
-			sql.append(" order by no desc");
+			sql.append("SELECT b.board_no,b.category,b.title,b.time_posted,b.hits,b.likes,b.member_id,m.name FROM(");
+			sql.append("SELECT row_number() over(order by board_no desc) as rnum,board_no,category,title,");
+			sql.append("to_char(time_posted,'YYYY.MM.DD') as time_posted,hits,likes,member_id FROM ");
+			sql.append("alba_board");
+			sql.append(") b,alba_member m where b.member_id=m.member_id and rnum between ? and ? ");
+			sql.append(" order by board_no desc");
 			pstmt=con.prepareStatement(sql.toString());
 			pstmt.setInt(1, pagingBean.getStartRowNumber());
 			pstmt.setInt(2, pagingBean.getEndRowNumber());
 			rs=pstmt.executeQuery();	
 			//목록에서 게시물 content는 필요없으므로 null로 setting
-			//select no,title,time_posted,hits,id,name
+			//select board_no,title,time_posted,hits,id,name
 			while(rs.next()){		
 				BoardVO bvo=new BoardVO();
-				bvo.setNo(rs.getInt(1));
+				bvo.setBoard_no(rs.getInt(1));
 				bvo.setCategory(rs.getString(2));
 				bvo.setTitle(rs.getString(3));
 				bvo.setTimePosted(rs.getString(4));
 				bvo.setHits(rs.getInt(5));
-				bvo.setGhits(rs.getInt(6));
+				bvo.setLikes(rs.getInt(6));
 				MemberVO mvo=new MemberVO();
-				mvo.setId(rs.getString(7));
+				mvo.setMember_id(rs.getString(7));
 				mvo.setName(rs.getString(8));
 				bvo.setMemberVO(mvo);
 				list.add(bvo);			
@@ -90,7 +90,7 @@ public class BoardDAO {
 		int count=-1;
 		try{
 			con=getConnection(); 
-			String sql="select count(*) from board_login_inst";
+			String sql="select count(*) from alba_board";
 			pstmt=con.prepareStatement(sql);			
 			rs=pstmt.executeQuery();
 			if(rs.next()){
@@ -104,11 +104,11 @@ public class BoardDAO {
 	
     /**
      * Sequence 글번호로 게시물을 검색하는 메서드 
-     * @param no
+     * @param board_no
      * @return
      * @throws SQLException
      */
-	public BoardVO getPostingByNo(int no) throws SQLException{
+	public BoardVO getPostingByboard_no(int board_no) throws SQLException{
 		BoardVO bvo=null;
 		Connection con=null;
 		PreparedStatement pstmt=null;
@@ -117,22 +117,22 @@ public class BoardDAO {
 			con=getConnection();
 			StringBuilder sql=new StringBuilder();
 			sql.append("select b.title,to_char(b.time_posted,'YYYY.MM.DD  HH24:MI:SS') as time_posted");
-			sql.append(",b.content,b.hits,b.id,m.name");
-			sql.append(" from board_login_inst b,board_member m");
-			sql.append(" where b.id=m.id and b.no=?");		
+			sql.append(",b.content,b.hits,b.member_id,m.name");
+			sql.append(" from alba_board b,alba_member m");
+			sql.append(" where b.member_id=m.member_id and b.board_no=?");		
 			pstmt=con.prepareStatement(sql.toString());
-			pstmt.setInt(1, no);
+			pstmt.setInt(1, board_no);
 			rs=pstmt.executeQuery();
 		
 			if(rs.next()){
 				bvo=new BoardVO();
-				bvo.setNo(no);
+				bvo.setBoard_no(board_no);
 				bvo.setTitle(rs.getString("title"));
 				bvo.setContent(rs.getString("content"));				
 				bvo.setHits(rs.getInt("hits"));
 				bvo.setTimePosted(rs.getString("time_posted"));
 				MemberVO mvo=new MemberVO();
-				mvo.setId(rs.getString("id"));
+				mvo.setMember_id(rs.getString("member_id"));
 				mvo.setName(rs.getString("name"));
 				bvo.setMemberVO(mvo);
 			}
@@ -145,17 +145,17 @@ public class BoardDAO {
 	
 	/**
 	 * 조회수 증가 
-	 * @param no
+	 * @param board_no
 	 * @throws SQLException
 	 */
-	public void updateHit(int no) throws SQLException{
+	public void updateHit(int board_no) throws SQLException{
 		Connection con=null;
 		PreparedStatement pstmt=null;
 		try{
 			con=getConnection(); 
-			String sql="update board_login_inst set hits=hits+1 where no=?";
+			String sql="update alba_board set hits=hits+1 where board_no=?";
 			pstmt=con.prepareStatement(sql);
-			pstmt.setInt(1, no);	
+			pstmt.setInt(1, board_no);	
 			pstmt.executeUpdate();			
 		}finally{
 			closeAll(pstmt,con);
@@ -173,20 +173,21 @@ public class BoardDAO {
 		ResultSet rs=null;
 		try{
 			con=getConnection();
-			//insert into board_login_inst(no,title,content,id,time_posted) values(board_login_inst_seq.nextval,?,?,?,sysdate)
+			//insert into alba_board(board_no,title,content,id,time_posted) values(board_no_seq.nextval,?,?,?,sysdate)
 			StringBuilder sql=new StringBuilder();
-			sql.append("insert into board_login_inst(no,title,content,id,time_posted)");
-			sql.append(" values(board_login_inst_seq.nextval,?,?,?,sysdate)");			
+			sql.append("insert into alba_board(board_no,category,title,content,member_id,time_posted)");
+			sql.append(" values(board_no_seq.nextval,?,?,?,?,sysdate)");			
 			pstmt=con.prepareStatement(sql.toString());
-			pstmt.setString(1, vo.getTitle());
-			pstmt.setString(2, vo.getContent());
-			pstmt.setString(3, vo.getMemberVO().getId());
+			pstmt.setString(1, vo.getCategory());
+			pstmt.setString(2, vo.getTitle());
+			pstmt.setString(3, vo.getContent());
+			pstmt.setString(4, vo.getMemberVO().getMember_id());
 			pstmt.executeUpdate();			
 			pstmt.close();
-			pstmt=con.prepareStatement("select board_login_inst_seq.currval from dual");
+			pstmt=con.prepareStatement("select board_no_seq.currval from dual");
 			rs=pstmt.executeQuery();
 			if(rs.next())
-			vo.setNo(rs.getInt(1));			
+			vo.setBoard_no(rs.getInt(1));	
 		}finally{
 			closeAll(rs,pstmt,con);
 		}
@@ -194,16 +195,16 @@ public class BoardDAO {
 
 	/**
 	 * 글번호에 해당하는 게시물을 삭제하는 메서드
-	 * @param no
+	 * @param board_no
 	 * @throws SQLException
 	 */
-	public void deletePosting(int no) throws SQLException{
+	public void deletePosting(int board_no) throws SQLException{
 		Connection con=null;
 		PreparedStatement pstmt=null;
 		try{
 			con=getConnection(); 
-			pstmt=con.prepareStatement("delete from board_login_inst where no=?");
-			pstmt.setInt(1, no);		
+			pstmt=con.prepareStatement("delete from alba_board where board_no=?");
+			pstmt.setInt(1, board_no);		
 			pstmt.executeUpdate();			
 		}finally{
 			closeAll(pstmt,con);
@@ -219,10 +220,10 @@ public class BoardDAO {
 		PreparedStatement pstmt=null;
 		try{
 			con=getConnection();
-			pstmt=con.prepareStatement("update board_login_inst set title=?,content=? where no=?");
+			pstmt=con.prepareStatement("update alba_board set title=?,content=? where board_no=?");
 			pstmt.setString(1, vo.getTitle());
 			pstmt.setString(2, vo.getContent());
-			pstmt.setInt(3, vo.getNo());	
+			pstmt.setInt(3, vo.getBoard_no());	
 			pstmt.executeUpdate();			
 		}finally{
 			closeAll(pstmt,con);

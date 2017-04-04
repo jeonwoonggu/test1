@@ -7,10 +7,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
 <title>Insert title here</title>
+<script type="text/javascript">
+function searchForm() {
+	
+}
+</script>
 <style type="text/css">
 	.searchForm {
-	height: 50px;
-    width: 30%;
+	height: 40px;
+    width: 300px;
     border-color: #FFDB45;
    	border-width: 3px;
    	border-style: solid;
@@ -22,18 +27,12 @@
 </style>
 </head>
 <body>
-<div class="container-fluid">
   <div class="page-header">
-    <img src="${pageContext.request.contextPath}/img/logo.png" width="250" align="middle">
+    <a href="${pageContext.request.contextPath}/index.jsp"><img src="${pageContext.request.contextPath}/img/logo.png" width="200" align="middle"></a>
  	<input type="text" class="searchForm">
-	<img src="${pageContext.request.contextPath}/img/searchbtn.jpg" class="searchbtn" width="85" align="middle" style="margin-bottom: 6px;">
+	<img src="${pageContext.request.contextPath}/img/searching.jpg" class="searchbtn" width="50px" align="middle" style="margin-bottom: 2px;" onclick="searchForm">
 	<a href="" style="vertical-align: bottom; margin-left: 20%"> 로그인 </a>
 	<a href="" style="vertical-align: bottom; margin-left: 10px"> 회원가입 </a>
-  </div>    
-</div>
-<p>	
-	
-</p>
-<hr>
+ </div> 
 </body>
 </html>

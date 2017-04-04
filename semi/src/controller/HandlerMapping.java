@@ -7,11 +7,13 @@ public class HandlerMapping {
 		return instance;
 	}
 	public Controller create(String command){
-		Controller c=null;
+		Controller controller=null;
 		if(command.equals("list")){
-			c=new ListController();
+			controller=new ListController();
+		}else if (command.equals("write")) {
+			controller = new WriteController();
 		}
-		return c;
+		return controller;
 	}
 }
 
