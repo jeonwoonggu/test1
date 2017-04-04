@@ -16,7 +16,7 @@ public class WriteController implements Controller {
 		/*if(session==null||session.getAttribute("mvo")==null){
 			return "redirect:index.jsp";
 		}*/
-		String category= request.getParameter("catogory");
+		String category= request.getParameter("category");
 		String title = request.getParameter("title");
 		String content = request.getParameter("content");
 		BoardVO bvo=new BoardVO();

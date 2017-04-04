@@ -1,5 +1,11 @@
-drop table alba_board;
-drop table alba_member;
+drop sequence board_no_seq;
+
+create sequence board_no_seq nocache;
+
+drop table alba_board cascade constraints;
+drop table alba_member cascade constraints;
+drop table alba_likes cascade constraints;
+drop table alba_reply cascade constraints;
 
 create table alba_member(
    member_id varchar2(100) primary key,
@@ -30,8 +36,6 @@ create table alba_board(
 	member_id varchar2(100) not null,
 	constraint alba_board_fk foreign key(member_id) references alba_member(member_id)
 )
-drop sequence board_no_seq;
-create sequence board_no_seq nocache;
 
 create table alba_likes(
    member_id varchar2(100) not null,
@@ -58,11 +62,11 @@ create sequence reply_id_seq;
 
 select board_no_seq.nextval from dual;
 
+-- 실행하지 마세요 --
 insert into alba_board(board_no,category,title,content,time_posted,member_id) values(board_no_seq.nextval,'추천','치킨','ㅋㅋ',sysdate,'java');
-insert into alba_board(board_no,category,title,content,time_posted,member_id) values(board_no_seq.nextval,'비추천','햄버거','ㅋㅋ',sysdate,'ajax');
 insert into alba_board(board_no,category,title,content,time_posted,member_id) values(board_no_seq.nextval,'비추천','족발','ㅋㅋ',sysdate,'spring');
 insert into alba_board(board_no,category,title,content,time_posted,member_id) values(board_no_seq.nextval,'추천','닭발','ㅋㅋ',sysdate,'jquery');
-
+insert into alba_board(board_no,category,title,content,time_posted,member_id) values(board_no_seq.nextval,'비추천','햄버거','ㅋㅋ',sysdate,'ajax');
 insert into alba_board(board_no,category,title,content,time_posted,member_id) values(board_no_seq.nextval,'추천','피자','ㅋㅋ',sysdate,'servlet');
 insert into alba_board(board_no,category,title,content,time_posted,member_id) values(board_no_seq.nextval,'비추천','짬뽕','ㅋㅋ',sysdate,'jsp');
 

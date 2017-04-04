@@ -25,11 +25,11 @@
 		document.write_form.reset();
 	}
 	$(document).ready(function(){
-		$("#selcate").change(function(){
+		$("#selectcate").change(function(){
 			$("#category").val($(this).val());
 			alert($("#category").val());
 		});
-	});
+	})
 </script>
 </head>
 <body>
@@ -37,16 +37,15 @@
 	<br>
 	<form action="${pageContext.request.contextPath }/DispatcherServlet"
 		method="post" name="write_form">
-		<input type="hidden" name="command" value="write">
-		<input type="hidden" name="id" value="${sessionScope.mvo.member_Id }">
-		<input type="hidden" id="category" value=>
+		<input type="hidden" name="command" value="write"> 
+		<input type="hidden" name="id" value="${sessionScope.mvo.id }">
+		<input type="hidden" name="category" id="category" value="">
 		<div class="container">
 			<div class="table-responsive">
-				<table class="inputForm" style="margin-left: 15%">
+				<table class="inputForm" style="margin-left:15%">
 					<tbody>
 						<tr>
-							<td><select name="selcate" id="selcate"
-								style="width: 50px; height: 25px; margin-left: 10px;">
+							<td><select id="selectcate" style="width:50px; height:25px; margin-left:10px;" >
 									<option value="">------</option>
 									<option value="추천">추천</option>
 									<option value="비추천">비추천</option>
@@ -56,8 +55,8 @@
 								required="required" style="margin-left: 1%"></td>
 						</tr>
 						<tr>
-							<td style="height: 35px;">닉네임</td>
-							<td>${sessionScope.mvo.nickName }</td>
+							<td style="height: 35px;">이름</td>
+							<td>${sessionScope.mvo.name }</td>
 						</tr>
 						<tr>
 							<td colspan="4" align="left">&nbsp;&nbsp; <textarea
@@ -65,12 +64,10 @@
 							</td>
 						</tr>
 						<tr>
-							<td colspan="4" align="center"><img class="action"
-								src="${pageContext.request.contextPath }/img/writebtn.jpg"
-								alt="글입력" onclick="content_submit()" width="50"> <img
-								class="action"
-								src="${pageContext.request.contextPath }/img/cancelbtn.jpg"
-								onclick="cancel()" width="50"></td>
+							<td colspan="4" align="center">
+							<img class="action" src="${pageContext.request.contextPath }/img/writebtn.jpg" alt="글입력" onclick="content_submit()" width="50">
+							<img	class="action" src="${pageContext.request.contextPath }/img/cancelbtn.jpg" 	onclick="cancel()" width="50">
+							</td>
 						</tr>
 					</tbody>
 				</table>

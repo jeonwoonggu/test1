@@ -12,6 +12,16 @@ public class HandlerMapping {
 			controller=new ListController();
 		}else if (command.equals("write")) {
 			controller = new WriteController();
+		}else if (command.equals("login")) {
+			controller = new LoginController();
+		} else if (command.equals("logout")) {
+			controller = new LogoutController();
+		} else if (command.equals("registration")) {
+			controller = new RegistrationController();
+		} else if (command.equals("findMemberId")) {
+			controller = new FindMemberIdController();
+		} else if (command.equals("findNickName")){
+			controller = new FindNickName();
 		}
 		return controller;
 	}

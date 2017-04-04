@@ -46,7 +46,7 @@ public class BoardDAO {
 		try{
 			con=getConnection(); 
 			StringBuilder sql=new StringBuilder();
-			sql.append("SELECT b.board_no,b.category,b.title,b.time_posted,b.hits,b.likes,b.member_id,m.name FROM(");
+			sql.append("SELECT b.board_no,b.category,b.title,b.time_posted,b.hits,b.likes,b.member_id,m.nickName FROM(");
 			sql.append("SELECT row_number() over(order by board_no desc) as rnum,board_no,category,title,");
 			sql.append("to_char(time_posted,'YYYY.MM.DD') as time_posted,hits,likes,member_id FROM ");
 			sql.append("alba_board");
@@ -67,8 +67,8 @@ public class BoardDAO {
 				bvo.setHits(rs.getInt(5));
 				bvo.setLikes(rs.getInt(6));
 				MemberVO mvo=new MemberVO();
-				mvo.setMember_id(rs.getString(7));
-				mvo.setName(rs.getString(8));
+				mvo.setMember_Id(rs.getString(7));
+				mvo.setNickName(rs.getString(8));
 				bvo.setMemberVO(mvo);
 				list.add(bvo);			
 			}		
@@ -132,7 +132,7 @@ public class BoardDAO {
 				bvo.setHits(rs.getInt("hits"));
 				bvo.setTimePosted(rs.getString("time_posted"));
 				MemberVO mvo=new MemberVO();
-				mvo.setMember_id(rs.getString("member_id"));
+				mvo.setMember_Id(rs.getString("member_id"));
 				mvo.setName(rs.getString("name"));
 				bvo.setMemberVO(mvo);
 			}
@@ -181,8 +181,8 @@ public class BoardDAO {
 			pstmt.setString(1, vo.getCategory());
 			pstmt.setString(2, vo.getTitle());
 			pstmt.setString(3, vo.getContent());
-			pstmt.setString(4, vo.getMemberVO().getMember_id());
-			pstmt.executeUpdate();			
+			pstmt.setString(4, vo.getMemberVO().getMember_Id());
+			pstmt.executeUpdate();	
 			pstmt.close();
 			pstmt=con.prepareStatement("select board_no_seq.currval from dual");
 			rs=pstmt.executeQuery();

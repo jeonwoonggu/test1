@@ -46,7 +46,7 @@
 				</c:otherwise>
 				</c:choose>
 				</td>
-				<td>${bvo.memberVO.nickName }</td>
+				<td>${bvo.memberVO.name }</td>
 				<td>${bvo.timePosted }</td>
 				<td>${bvo.hits }</td>
 				<td>${bvo.likes }</td>
