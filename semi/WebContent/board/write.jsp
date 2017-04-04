@@ -27,7 +27,6 @@
 	$(document).ready(function(){
 		$("#selcate").change(function(){
 			$("#category").val($(this).val());
-			alert($("#category").val());
 		});
 	});
 </script>
@@ -39,13 +38,13 @@
 		method="post" name="write_form">
 		<input type="hidden" name="command" value="write">
 		<input type="hidden" name="id" value="${sessionScope.mvo.member_Id }">
-		<input type="hidden" id="category" value=>
+		<input type="hidden" id="category" name ="category" value=>
 		<div class="container">
 			<div class="table-responsive">
 				<table class="inputForm" style="margin-left: 15%">
 					<tbody>
 						<tr>
-							<td><select name="selcate" id="selcate"
+							<td><select id="selcate"
 								style="width: 50px; height: 25px; margin-left: 10px;">
 									<option value="">------</option>
 									<option value="추천">추천</option>

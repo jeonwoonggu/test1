@@ -1,9 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"
@@ -19,55 +17,20 @@
 			<table id="test" class="table table-hover">
 				<thead>
 					<tr>
-						<th colspan="5">제목</th>
-						<th>글번호</th>
+						<th colspan="5">제목 : ${requestScope.bvo.title} </th>
+						<th>글번호 : ${requestScope.bvo.board_no } </th>
 					</tr>
 					<tr>
-						<th colspan="2">아이디</th>
-						<th colspan="2">작성일</th>
-						<th colspan="2">조회수</th>
+						<th colspan="2">작성자 : ${requestScope.bvo.memberVO.nickName}</th>
+						<th colspan="2">작성일 :  ${requestScope.bvo.timePosted }</th>
+						<th colspan="2">조회수 :  ${requestScope.bvo.hits }</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
 						<td colspan="6">
 						<div style="overflow:auto; width:100%; height:300px;">
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
-						내용<br>
+							<pre>${requestScope.bvo.content}</pre>
 						</div>
 						</td>
 					</tr>

@@ -25,7 +25,7 @@ public class WriteController implements Controller {
 		bvo.setContent(content);
 		bvo.setMemberVO((MemberVO)session.getAttribute("mvo"));		
 		BoardDAO.getInstance().posting(bvo);
-		String path="redirect:DispatcherServlet?command=showContentNotHit&no="+bvo.getBoard_no();
+		String path="redirect:DispatcherServlet?command=showContent&no="+bvo.getBoard_no();
 		return path;
 	}
 }
