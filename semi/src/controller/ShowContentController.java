@@ -14,7 +14,7 @@ public class ShowContentController implements Controller {
 		//조회수를 증가시킨다. 
 		BoardDAO.getInstance().updateHit(no);
 		// 개별 게시물 조회  
-		BoardVO vo = BoardDAO.getInstance().getPostingByboard_no(no);
+		BoardVO vo = BoardDAO.getInstance().getPostingByNo(no);	
 		request.setAttribute("bvo", vo);	
 		return "board/detail.jsp";
 	}

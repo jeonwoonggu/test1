@@ -28,10 +28,3 @@ public class ListController  implements Controller {
 		return "board/list.jsp";
 	}
 }
-
-
-
-
-
-
-

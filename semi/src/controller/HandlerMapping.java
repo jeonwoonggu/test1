@@ -22,6 +22,8 @@ public class HandlerMapping {
 			controller = new FindMemberIdController();
 		} else if (command.equals("findNickName")){
 			controller = new FindNickName();
+		} else if (command.equals("myInfo")){
+			controller = new MyInfoController();
 		}else if(command.equals("showContent")){
 			controller = new ShowContentController();
 		}

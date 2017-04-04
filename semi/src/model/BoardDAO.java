@@ -108,35 +108,32 @@ public class BoardDAO {
      * @return
      * @throws SQLException
      */
-	public BoardVO getPostingByboard_no(int board_no) throws SQLException{
+	public BoardVO getPostingByNo(int no) throws SQLException{
 		BoardVO bvo=null;
 		Connection con=null;
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		try{
 			con=getConnection();
-			StringBuilder sql=new StringBuilder();
-			sql.append("select b.title,to_char(b.time_posted,'YYYY.MM.DD  HH24:MI:SS') as time_posted");
-			sql.append(",b.content,b.hits,b.member_id,m.name");
-			sql.append(" from alba_board b,alba_member m");
-			sql.append(" where b.member_id=m.member_id and b.board_no=?");		
-			pstmt=con.prepareStatement(sql.toString());
-			pstmt.setInt(1, board_no);
+			String sql="select b.category, b.title, b.content, b.time_posted, b.hits, b.likes, m.nickname "
+					+ "from alba_board b, alba_member m where m.member_id=b.member_id and board_no=?";
+			pstmt=con.prepareStatement(sql);
+			pstmt.setInt(1, no);
 			rs=pstmt.executeQuery();
-		
 			if(rs.next()){
 				bvo=new BoardVO();
-				bvo.setBoard_no(board_no);
+				bvo.setBoard_no(no);
 				bvo.setTitle(rs.getString("title"));
+				bvo.setCategory(rs.getString("category"));
 				bvo.setContent(rs.getString("content"));				
-				bvo.setHits(rs.getInt("hits"));
 				bvo.setTimePosted(rs.getString("time_posted"));
+				bvo.setHits(rs.getInt("hits"));
+				bvo.setLikes(rs.getInt("likes"));
 				MemberVO mvo=new MemberVO();
-				mvo.setMember_Id(rs.getString("member_id"));
-				mvo.setName(rs.getString("name"));
+				mvo.setNickName(rs.getString("nickname"));
 				bvo.setMemberVO(mvo);
+				System.out.println(bvo.toString());
 			}
-			//System.out.println("dao getContent:"+bvo);
 		}finally{
 			closeAll(rs,pstmt,con);
 		}
@@ -182,7 +179,7 @@ public class BoardDAO {
 			pstmt.setString(2, vo.getTitle());
 			pstmt.setString(3, vo.getContent());
 			pstmt.setString(4, vo.getMemberVO().getMember_Id());
-			pstmt.executeUpdate();	
+			pstmt.executeUpdate();			
 			pstmt.close();
 			pstmt=con.prepareStatement("select board_no_seq.currval from dual");
 			rs=pstmt.executeQuery();
