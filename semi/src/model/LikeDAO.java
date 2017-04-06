@@ -44,13 +44,17 @@ public class LikeDAO {
 		boolean flag=false;	// false면 좋아요 안했음
 		try{
 			con=getConnection(); 
-			String sql="select count(*) from likes where member_id=? and board_no=?";
+			String sql="select count(*) from alba_likes where member_id=? and board_no=?";
 			pstmt=con.prepareStatement(sql);		
 			pstmt.setString(1,id);
 			pstmt.setInt(2, no);
 			rs=pstmt.executeQuery();
+			
 			if(rs.next()){
-				flag=true;
+				System.out.println(rs.getInt(1));
+				if(rs.getInt(1)>0){
+					flag=true;
+				}
 			}
 			System.out.println(flag);
 		}finally{

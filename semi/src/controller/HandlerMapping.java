@@ -34,8 +34,20 @@ public class HandlerMapping {
 			controller = new SympathyListController();
 		} else if(command.equals("updateMyInfo")){
 			controller=new UpdateMyInfoController();
-		}else if(command.equals("search")){
+		} else if(command.equals("deleteMember")){
+			controller=new DeleteMemberControll();
+		} else if(command.equals("search")){
 			controller=new SearchController();
+		} else if(command.equals("wrtieReply")){
+			controller=new WriteReplyController();
+		} else if(command.equals("deleteReply")){
+			controller = new DeleteReplyController();
+		} else if(command.equals("updateReply")){
+			controller = new UpdateReplyController();
+		} else if(command.equals("forgetpassword")){
+			controller = new ForgetPasswordController();
+		} else if(command.equals("changePassword")){
+			controller = new ChangePasswordController();
 		}
 		return controller;
 	}

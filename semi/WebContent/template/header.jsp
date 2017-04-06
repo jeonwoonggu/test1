@@ -53,7 +53,9 @@
 <body>
 	<div class="page-header">
 	<form name="searchForm">
-		<a href="${pageContext.request.contextPath}/index.jsp"><img src="${pageContext.request.contextPath}/img/logo.png" width="200" align="middle"></a>
+		<a href="${pageContext.request.contextPath}/index.jsp">
+		<img src="${pageContext.request.contextPath}/img/logo.png" width="200"
+			align="middle" style="margin-left: 5%"></a>
 		<input type="text" id="searchword" class="searchForm" value="">
 		<img src="${pageContext.request.contextPath}/img/searching.jpg" id="searchbtn" width="50px" align="middle" style="margin-bottom: 2px;">
 		<c:choose>
@@ -70,6 +72,7 @@
 					<ul class="nav navbar-nav navbar-right">
 						<li><a href="${pageContext.request.contextPath}/DispatcherServlet?command=myInfo">${sessionScope.mvo.name}님</a></li>
 						<li><a href="javascript:logout()">로그아웃</a></li>
+						<li><a href="${pageContext.request.contextPath}/member/deleteMember.jsp">회원탈퇴</a></li>
 					</ul>
 				</div>
 			</c:otherwise>

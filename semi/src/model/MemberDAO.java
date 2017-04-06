@@ -7,7 +7,6 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-
 public class MemberDAO {
 	private static MemberDAO instance = new MemberDAO();
 	private DataSource dataSource;
@@ -44,7 +43,7 @@ public class MemberDAO {
 		ResultSet rs = null;
 		try {
 			con = getConnection();
-			String sql = "select member_id,password,name,nickname from alba_member where member_id=? and password=?";
+			String sql = "select member_id,password,name,nickname from alba_member where member_id=? and password=? and deletemember='true'";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, memberId);
 			pstmt.setString(2, password);
@@ -59,7 +58,7 @@ public class MemberDAO {
 	}
 
 	public String findMemberId(String memberId) throws SQLException {
-		String	id = null;
+		String id = null;
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -69,17 +68,17 @@ public class MemberDAO {
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, memberId);
 			rs = pstmt.executeQuery();
-			if (rs.next()){
-				id=rs.getString(1);
+			if (rs.next()) {
+				id = rs.getString(1);
 			}
 		} finally {
 			closeAll(rs, pstmt, con);
 		}
 		return id;
 	}
-	
+
 	public String findNickName(String nickName) throws SQLException {
-		String	nick = null;
+		String nick = null;
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -89,15 +88,15 @@ public class MemberDAO {
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, nickName);
 			rs = pstmt.executeQuery();
-			if (rs.next()){
-				nick=rs.getString(1);
+			if (rs.next()) {
+				nick = rs.getString(1);
 			}
 		} finally {
 			closeAll(rs, pstmt, con);
 		}
 		return nick;
 	}
-	
+
 	public void registration(MemberVO vo) throws SQLException {
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -120,7 +119,7 @@ public class MemberDAO {
 			closeAll(pstmt, con);
 		}
 	}
-	
+
 	public MemberVO findMyInfo(String memberId) throws SQLException {
 		MemberVO vo = null;
 		Connection con = null;
@@ -133,13 +132,15 @@ public class MemberDAO {
 			pstmt.setString(1, memberId);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				vo = new MemberVO(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7));
+				vo = new MemberVO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),
+						rs.getString(6), rs.getString(7));
 			}
 		} finally {
 			closeAll(rs, pstmt, con);
 		}
 		return vo;
 	}
+
 	public void updateMyInfo(MemberVO vo) throws SQLException {
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -160,20 +161,64 @@ public class MemberDAO {
 			closeAll(pstmt, con);
 		}
 	}
+
+	public void deleteMember(String memberId, String password) throws SQLException {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			con = getConnection();
+			String sql = "update alba_member set deletemember='false' where member_id=? and password=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, memberId);
+			pstmt.setString(2, password);
+			pstmt.executeUpdate();
+
+		} finally {
+			closeAll(pstmt, con);
+
+		}
+
+	}
 	
+	public MemberVO forgetPassword(MemberVO vo) throws SQLException {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		MemberVO passVO = null;
+		try {
+			con = getConnection();
+			String sql = "select member_id,password,name,nickname from alba_member where member_id=? and name=? and residentnumber=? and tel=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, vo.getMember_Id());
+			pstmt.setString(2, vo.getName());
+			pstmt.setString(3, vo.getResidentNumber());
+			pstmt.setString(4, vo.getTel());
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				passVO = new MemberVO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
+			}
+		} finally {
+			closeAll(rs, pstmt, con);
+
+		}
+		return passVO;
+	}
+	
+	public void changePassword(String memberId, String password) throws SQLException {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			con = getConnection();
+			String sql = "update alba_member set password=? where member_id=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, password);
+			pstmt.setString(2, memberId);
+			pstmt.executeUpdate();
+
+		} finally {
+			closeAll(pstmt, con);
+
+		}
+
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

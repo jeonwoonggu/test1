@@ -43,6 +43,7 @@ input[type=submit]:hover {
 
 </head>
 <body>
+
 <div style="padding:150px; text-align:center;">
 <a href="${pageContext.request.contextPath}/index.jsp">
 	<img src="${pageContext.request.contextPath}/img/logo.png">
@@ -53,6 +54,8 @@ input[type=submit]:hover {
 	<input type="hidden" name="command" value="login">
 	<input type="submit" value="로그인" >
 </form>
+<br><a href="${pageContext.request.contextPath}/member/forgetId.jsp">아이디 찾기</a>
+<br><a href="${pageContext.request.contextPath}/member/forgetpassword.jsp">비밀번호 찾기</a>
 </div>
 
 </body>

@@ -15,13 +15,14 @@ create table alba_member(
    residentnumber varchar2(100) not null,
    gender varchar2(100) not null,
    password varchar2(100) not null,
-   nickname varchar2(100) not null
+   nickname varchar2(100) not null,
+   deletemember varchar2(100) default 'true'
 )
 
 insert into alba_member(member_id,password,name,residentnumber,gender,nickname,tel,address)
- values('java','1234','아이유','930516','woman','IU','031','판교');
+ values('java','1234','아이유','19930516','woman','IU','031','판교');
 insert into alba_member(member_id,password,name,residentnumber,gender,nickname,tel,address)
- values('ajax','abcd','강동원','810118','man','mr.kang','02','강남');
+ values('ajax','abcd','강동원','19810118','man','mr.kang','02','강남');
 
 select * from alba_member;
 
@@ -43,22 +44,35 @@ create table alba_likes(
    board_no number not null,
    constraint likes_no foreign key(board_no) references alba_board(board_no)
 )
+insert into alba_likes values('hoe0124',1);
+select * from alba_likes;
+select count(*) from alba_likes where member_id='hoe0124' and board_no=2;
+update alba_board set likes=1 where board_no=1
 
 create table alba_reply(
-reply_id number  primary key, -- 댓글 번호
+ reply_id number  primary key, -- 댓글 번호
  article_id number not null, --게시물 번호
  member_id varchar2(100) not null, -- 작성자
+ nickname varchar2(100) not null,
  reply_date date, -- 작성일자
  description varchar2(1000) not null, -- 댓글 내용
  group_id number not null, -- 댓글과 대댓글 하나의 그룹번호
  parent_id number default 0, -- 부모 댓글 표시
  depth number default 0, -- 몇대손인지 depth
  order_id number default 1, -- 게시물 기준으로 몇번째인지
- constraint fk_article_no foreign key(article_id) references alba_board(board_no)
+ constraint fk_article_no foreign key(article_id) references alba_board(board_no),
+ constraint fk_member_id foreign key(member_id) references alba_member(member_id) -- 외래키 추가
 )
-
+drop table alba_reply;
+select * from ALBA_REPLY;
 create sequence reply_id_seq;
+drop sequence reply_id_seq;
+-- 새 댓글 쓸 때 
+insert into alba_reply(reply_id,article_id,member_id,nickname,reply_date,description,group_id)
+values(reply_id_seq.nextval,2,'garin','가리니',sysdate,'댓글 테스트입니다',reply_id_seq.nextval);
 
+insert into alba_reply(reply_id,article_id,member_id,nickname,reply_date,description,group_id)
+values(reply_id_seq.nextval,2,'garin','가리니',sysdate,'두번째 댓글',reply_id_seq.nextval);
 
 select board_no_seq.nextval from dual;
 
@@ -73,7 +87,7 @@ insert into alba_board(board_no,category,title,content,time_posted,member_id) va
 select * from alba_board;
 
 commit
-
+select count(*) from alba_reply where article_id=10;
 -- hint 
 /*
 SELECT  리스트 페이지에서 필요한 컬럼 (게시물과 회원 관련 컬럼) FROM(

@@ -16,7 +16,12 @@
 <script type="text/javascript">
 	function content_submit() {
 		if (confirm("글을 등록하시겠습니까?")) {
-			document.write_form.submit(); // 자바스크립트를 이용하여 form의 submit 실행
+			if($("#category").val()==""){
+				alert("카테고리를 선택하세요");
+				return false;
+			}else{
+				document.write_form.submit();
+			}
 		} else {
 			return false;
 		}

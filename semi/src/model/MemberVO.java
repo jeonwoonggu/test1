@@ -13,6 +13,15 @@ public class MemberVO {
 		super();
 	}
 	
+	public MemberVO(String member_Id, String name, int residentNumber, String tel) {
+		super();
+		this.member_Id = member_Id;
+		this.name = name;
+		String resident = String.valueOf(residentNumber);
+		this.residentNumber = resident;
+		this.tel = tel;
+	}
+
 	public MemberVO(String member_Id, String name, String residentNumber, String gender, String nickName, String tel,
 			String address) {
 		super();

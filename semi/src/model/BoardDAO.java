@@ -46,7 +46,7 @@ public class BoardDAO {
 		try{
 			con=getConnection(); 
 			StringBuilder sql=new StringBuilder();
-			sql.append("SELECT b.board_no,b.category,b.title,b.time_posted,b.hits,b.likes,b.member_id,m.nickName FROM(");
+			sql.append("SELECT b.board_no,b.category,b.title,b.time_posted,b.hits,b.likes,b.member_id,m.nickName,m.deletemember FROM(");
 			sql.append("SELECT row_number() over(order by board_no desc) as rnum,board_no,category,title,");
 			sql.append("to_char(time_posted,'YYYY.MM.DD') as time_posted,hits,likes,member_id FROM ");
 			sql.append("alba_board");
@@ -68,7 +68,11 @@ public class BoardDAO {
 				bvo.setLikes(rs.getInt(6));
 				MemberVO mvo=new MemberVO();
 				mvo.setMember_Id(rs.getString(7));
-				mvo.setNickName(rs.getString(8));
+				if(rs.getString(9).equals("true")){
+					mvo.setNickName(rs.getString(8));					
+				} else {
+					mvo.setNickName("탈퇴회원");
+				}
 				bvo.setMemberVO(mvo);
 				list.add(bvo);			
 			}		
@@ -108,44 +112,44 @@ public class BoardDAO {
      * @return
      * @throws SQLException
      */
-	public BoardVO getPostingByNo(int board_no) throws SQLException{
-		BoardVO bvo=null;
-		Connection con=null;
-		PreparedStatement pstmt=null;
-		ResultSet rs=null;
-		try{
-			con=getConnection();
-			StringBuilder sql=new StringBuilder();
-			sql.append("select b.title,to_char(b.time_posted,'YYYY.MM.DD  HH24:MI:SS') as time_posted");
-			sql.append(",b.content,b.hits,b.member_id,m.name");
-			sql.append(" from alba_board b,alba_member m");
-			sql.append(" where b.member_id=m.member_id and b.board_no=?");		
-			pstmt=con.prepareStatement(sql.toString());
-			pstmt.setInt(1, board_no);
-			rs=pstmt.executeQuery();
-		
-			if(rs.next()){
-				bvo=new BoardVO();
-				bvo.setBoard_no(board_no);
-				bvo.setTitle(rs.getString("title"));
-				bvo.setContent(rs.getString("content"));				
-				bvo.setHits(rs.getInt("hits"));
-				bvo.setTimePosted(rs.getString("time_posted"));
-				MemberVO mvo=new MemberVO();
-				mvo.setMember_Id(rs.getString("member_id"));
-				mvo.setName(rs.getString("name"));
-				bvo.setMemberVO(mvo);
-/*<<<<<<< HEAD
-				//System.out.println(bvo.toString());
-=======
->>>>>>> branch 'master' of https://github.com/garin0/AlbaSsul.git
-*/			}
-			//System.out.println("dao getContent:"+bvo);
-		}finally{
-			closeAll(rs,pstmt,con);
-		}
-		return bvo;
-	}
+   public BoardVO getPostingByNo(int board_no) throws SQLException{
+      BoardVO bvo=null;
+      Connection con=null;
+      PreparedStatement pstmt=null;
+      ResultSet rs=null;
+      try{
+         con=getConnection();
+         StringBuilder sql=new StringBuilder();
+         sql.append("select b.title, to_char(b.time_posted,'YYYY.MM.DD  HH24:MI:SS') as time_posted, ");
+         sql.append("b.content, b.hits, b.likes, b.member_id, m.name, m.nickname, m.deletemember ");
+         sql.append("from alba_board b, alba_member m ");
+         sql.append("where b.member_id=m.member_id and b.board_no=?");      
+         pstmt=con.prepareStatement(sql.toString());
+         pstmt.setInt(1, board_no);
+         rs=pstmt.executeQuery();      
+         if(rs.next()){
+            bvo=new BoardVO();
+            bvo.setBoard_no(board_no);
+            bvo.setTitle(rs.getString("title"));
+            bvo.setContent(rs.getString("content"));               
+            bvo.setHits(rs.getInt("hits"));
+            bvo.setLikes(rs.getInt("likes"));
+            bvo.setTimePosted(rs.getString("time_posted"));
+            MemberVO mvo=new MemberVO();
+            mvo.setMember_Id(rs.getString("member_id"));
+            mvo.setName(rs.getString("name"));
+            if(rs.getString(9).equals("true")){
+				mvo.setNickName(rs.getString("nickname"));					
+			} else {
+				mvo.setNickName("탈퇴회원");
+			}
+            bvo.setMemberVO(mvo);
+         }
+      }finally{
+         closeAll(rs,pstmt,con);
+      }
+      return bvo;
+   }
 	
 	/**
 	 * 조회수 증가 
@@ -362,7 +366,7 @@ public class BoardDAO {
 		try{
 			con=getConnection(); 
 			StringBuilder sql=new StringBuilder();
-			sql.append("SELECT b.board_no,b.category,b.title,b.time_posted,b.hits,b.likes,b.member_id,m.nickName FROM(");
+			sql.append("SELECT b.board_no,b.category,b.title,b.time_posted,b.hits,b.likes,b.member_id,m.nickName,m.deletemember FROM(");
 			sql.append("SELECT row_number() over(order by board_no desc) as rnum,board_no,category,title,");
 			sql.append("to_char(time_posted,'YYYY.MM.DD') as time_posted,hits,likes,member_id FROM ");
 			sql.append("alba_board");
@@ -385,7 +389,11 @@ public class BoardDAO {
 				bvo.setLikes(rs.getInt(6));
 				MemberVO mvo=new MemberVO();
 				mvo.setMember_Id(rs.getString(7));
-				mvo.setNickName(rs.getString(8));
+				if(rs.getString(9).equals("true")){
+					mvo.setNickName(rs.getString(8));					
+				} else {
+					mvo.setNickName("탈퇴회원");
+				}
 				bvo.setMemberVO(mvo);
 				list.add(bvo);			
 			}		
