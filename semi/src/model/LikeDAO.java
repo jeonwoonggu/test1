@@ -49,17 +49,54 @@ public class LikeDAO {
 			pstmt.setString(1,id);
 			pstmt.setInt(2, no);
 			rs=pstmt.executeQuery();
-			
 			if(rs.next()){
-				System.out.println(rs.getInt(1));
 				if(rs.getInt(1)>0){
 					flag=true;
 				}
 			}
-			System.out.println(flag);
 		}finally{
 			closeAll(rs,pstmt,con);
 		}
 		return flag;
+	}
+	/**
+	 * 좋아요
+	 * @param id
+	 * @param no
+	 * @throws SQLException
+	 */
+	public void likeCount(String id, int no) throws SQLException{
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		try{
+			con=getConnection(); 
+			String sql="insert into alba_likes(member_id, board_no) values(?,?)";
+			pstmt=con.prepareStatement(sql);		
+			pstmt.setString(1,id);
+			pstmt.setInt(2, no);
+			pstmt.executeUpdate();		
+		}finally{
+			closeAll(pstmt,con);
+		}
+	}
+	/**
+	 * 좋아요 취소
+	 * @param id
+	 * @param no
+	 * @throws SQLException
+	 */
+	public void likeCancel(String id, int no) throws SQLException{
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		try{
+			con=getConnection(); 
+			String sql="delete from alba_likes where member_id=? and board_no=?";
+			pstmt=con.prepareStatement(sql);		
+			pstmt.setString(1,id);
+			pstmt.setInt(2, no);
+			pstmt.executeUpdate();		
+		}finally{
+			closeAll(pstmt,con);
+		}
 	}
 }

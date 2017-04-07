@@ -8,6 +8,10 @@ public class BoardVO {
 	private String timePosted;
 	private int hits;
 	private int likes;
+	private int replycount;
+	private String job;
+	private String startDate;
+	private String endDate;
 	private MemberVO memberVO;
 	public BoardVO() {
 		super();
@@ -22,7 +26,7 @@ public class BoardVO {
 	}
 
 	public BoardVO(int board_no, String category, String title, String content, String timePosted, int hits, int likes,
-			MemberVO memberVO) {
+			int replycount, String job, String startDate, String endDate, MemberVO memberVO) {
 		super();
 		this.board_no = board_no;
 		this.category = category;
@@ -31,7 +35,11 @@ public class BoardVO {
 		this.timePosted = timePosted;
 		this.hits = hits;
 		this.likes = likes;
+		this.job=job;
+		this.startDate=startDate;
+		this.endDate=endDate;
 		this.memberVO = memberVO;
+		this.replycount = replycount;
 	}
 
 	public int getBoard_no() {
@@ -96,6 +104,38 @@ public class BoardVO {
 
 	public void setMemberVO(MemberVO memberVO) {
 		this.memberVO = memberVO;
+	}
+
+	public int getReplycount() {
+		return replycount;
+	}
+
+	public void setReplycount(int replycount) {
+		this.replycount = replycount;
+	}
+
+	public String getJob() {
+		return job;
+	}
+
+	public void setJob(String job) {
+		this.job = job;
+	}
+
+	public String getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
 	}
 
 	@Override

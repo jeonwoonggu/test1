@@ -25,9 +25,14 @@ input[type=submit]:hover {
 function pageOut(){
 	location.href="${pageContext.request.contextPath}/index.jsp";
 }
+function keypress(){
+	if(event.keyCode==13){
+		location.href = "${pageContext.request.contextPath}/index.jsp";
+	}
+}
 </script>
 </head>
-<body>
+<body onkeypress="keypress()">
 <div style="padding:150px; text-align:center;">
 <a href="${pageContext.request.contextPath}/index.jsp">
 	<img src="${pageContext.request.contextPath}/img/logo.png">

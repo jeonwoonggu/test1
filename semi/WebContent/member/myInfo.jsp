@@ -25,7 +25,7 @@ input[type=text], input[type=password], select {
 }
 
 input[type=submit] {
-	width: 400px;
+	width: 200px;
 	background-color: #ffd100;
 	color: black;
 	padding: 14px 0;
@@ -37,6 +37,16 @@ input[type=submit] {
 
 input[type=submit]:hover {
 	background-color: #FFE87E;
+}
+input[type=button] {
+	width: 200px;
+	background-color: #ffd100;
+	color: black;
+	padding: 14px 0;
+	margin: 0px 0;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
 }
 </style>
 <script type="text/javascript">
@@ -191,7 +201,10 @@ input[type=submit]:hover {
 		<p>
 			<input type="hidden" name="command" value="updateMyInfo">
 			<input type="submit" value="수정하기">
+			<a href="${pageContext.request.contextPath}/member/deleteMember.jsp">
+			<input type="button" value="회원탈퇴"></a> 
 		</p>
+		
 		</form>
 	</center>
 </body>

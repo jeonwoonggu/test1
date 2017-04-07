@@ -37,10 +37,10 @@
 				<c:choose>
 				<c:when test="${sessionScope.mvo!=null}">
 				<a href="${pageContext.request.contextPath}/DispatcherServlet?command=showContent&no=${bvo.board_no }&memberId=${sessionScope.mvo.member_Id}">
-				${bvo.title }</a>
+				${bvo.title } (${bvo.replycount })</a>
 				</c:when>
 				<c:otherwise>
-				${bvo.title }
+				${bvo.title } (${bvo.replycount })
 				</c:otherwise>
 				</c:choose>
 				</td>
@@ -56,8 +56,8 @@
 	</div>
 	<br></br>	
 	<c:if test="${sessionScope.mvo!=null}">
-	<a href="${pageContext.request.contextPath}/board/write.jsp">
-	<img src="${pageContext.request.contextPath}/img/write.jpg" border="0" width="60px" style="margin-left: 80%"></a>
+	<a href="${pageContext.request.contextPath}/board/write.jsp" style="margin-left: 85%">
+	<img src="${pageContext.request.contextPath}/img/write.jpg" border="0" width="60px" ></a>
 	</c:if>
 	<br><br>	
 <p class="paging" style="margin-left: 50%">

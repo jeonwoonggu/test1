@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>아이디찾기 성공</title>
 <style type="text/css">
 input[type=button] {
     width: 400px;
@@ -38,8 +38,10 @@ function keypress(){
 	<img src="${pageContext.request.contextPath}/img/logo.png">
 </a>
 <h1>
-등록된 회원이 없습니다.
-</h1>
+          회원님의 아이디 입니다.<br>
+         ${requestScope.memberId}
+  
+</h1>	
 <input type="button" value="확인" onclick="pageOut()">
 </div>
 </body>

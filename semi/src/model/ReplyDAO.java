@@ -59,7 +59,7 @@ public class ReplyDAO {
 		ArrayList<ReplyVO> list = new ArrayList<ReplyVO>();
 		try{
 			con=getConnection();
-			String sql = "select reply_id,member_id,nickname,description,to_char(reply_date,'YYYY.MM.DD HH24:MI'),depth from alba_reply where article_id=? order by group_id asc,order_id asc";
+			String sql = "select reply_id,member_id,nickname,description,to_char(reply_date,'YYYY.MM.DD HH24:MI'),depth,parent_id from alba_reply where article_id=? order by group_id asc,order_id asc";
 			pstmt=con.prepareStatement(sql);
 			pstmt.setInt(1, no);
 			rs=pstmt.executeQuery();
@@ -77,6 +77,67 @@ public class ReplyDAO {
 	 * @param vo
 	 * @throws SQLException
 	 */
+	
+	public ReplyVO getParentInfo(int prno) throws SQLException{
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		ReplyVO vo = null;
+		try{
+			con=getConnection();
+			String sql = "SELECT article_id, depth+1 depth, order_id+1 order_id  FROM alba_reply WHERE reply_id= ?";
+			pstmt=con.prepareStatement(sql);
+			pstmt.setInt(1, prno);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				vo = new ReplyVO(rs.getInt(1),rs.getInt(2),rs.getInt(3));
+			}
+		}finally{
+			closeAll(rs, pstmt, con);
+		}
+		return vo;
+	}
+	
+	public int getNextReplyId() throws SQLException{
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		int result=0;
+		try{
+			con=getConnection();
+			String sql = "select reply_id_seq.nextval from dual";
+			pstmt=con.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				result = rs.getInt(1);
+			}
+		}finally{
+			closeAll(rs, pstmt, con);
+		}
+		return result;
+	}
+	
+	public int getParentsParentId(int prno) throws SQLException{
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		int result=0;
+		try{
+			con=getConnection();
+			String sql = "select parent_id from alba_reply where reply_id=?";
+			pstmt=con.prepareStatement(sql);
+			pstmt.setInt(1, prno);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				result = rs.getInt(1);
+			}
+		}finally{
+			closeAll(rs, pstmt, con);
+		}
+		return result;
+	}
+	
+	
 	public void insertNewReply(ReplyVO vo) throws SQLException{
 		Connection con=null;
 		PreparedStatement pstmt=null;
@@ -84,19 +145,45 @@ public class ReplyDAO {
 			con=getConnection();
 			StringBuffer sql = new StringBuffer();
 			sql.append("insert into alba_reply");
-			sql.append("(reply_id,article_id,member_id,nickname,reply_date,description,group_id)");
-			sql.append("values(reply_id_seq.nextval,?,?,?,sysdate,");
-			sql.append("?,reply_id_seq.nextval)");
+			sql.append("(reply_id,article_id,member_id,nickname,reply_date,description,group_id,parent_id,depth,order_id)");
+			sql.append("values(?,?,?,?,sysdate,");
+			sql.append("?,?,?,?,?)");
+			ReplyVO pvo = null;
+			int parent = vo.getParent_id();
+			int reno = getNextReplyId();
+			int group = 1;
+			int depth,order_id;
+			System.out.println(parent+ "  reno:"+reno);
+			if(parent ==0){ // 글에 댓글 달때 
+				group = reno;
+				depth = 0;
+				order_id= 1;
+			}else{ // 대댓글 달기
+				group = parent;
+				pvo = getParentInfo(parent);
+				depth = pvo.getDepth();
+				order_id = pvo.getOrder_id();
+				if(getParentsParentId(parent) != 0){
+					parent = getParentsParentId(parent);
+					group = parent;
+				}
+			}
 			pstmt=con.prepareStatement(sql.toString());
-			pstmt.setInt(1, vo.getArticle_id());
-			pstmt.setString(2, vo.getMember_id());
-			pstmt.setString(3, vo.getNickname());
-			pstmt.setString(4, vo.getDescription());
+			pstmt.setInt(1, reno);
+			pstmt.setInt(2, vo.getArticle_id());
+			pstmt.setString(3, vo.getMember_id());
+			pstmt.setString(4, vo.getNickname());
+			pstmt.setString(5, vo.getDescription());
+			pstmt.setInt(6, group);
+			pstmt.setInt(7, parent);
+			pstmt.setInt(8, depth);
+			pstmt.setInt(9, order_id);
 			pstmt.executeUpdate();
 		}finally{
 			closeAll(pstmt, con);
 		}
 	}
+	
 	/**
 	 * 댓글 삭제
 	 * @param rno

@@ -40,15 +40,22 @@ public class ReplyVO {
 		this.reply_date = reply_date;
 		this.depth = depth;
 	}
-	public ReplyVO(String member_id,String nickname, int article_id, String description) {
+	public ReplyVO(String member_id,String nickname, int article_id, String description,int parent_id) {
 		this.member_id = member_id;
 		this.nickname = nickname;
 		this.article_id = article_id;
 		this.description = description;
+		this.parent_id = parent_id;
 	}
 	public ReplyVO(int reply_id, String description) {
 		this.reply_id = reply_id;
 		this.description = description;
+	}
+
+	public ReplyVO(int article_id, int depth, int order_id) {
+		this.article_id = article_id;
+		this.depth = depth;
+		this.order_id = order_id;
 	}
 
 	public int getReply_id() {

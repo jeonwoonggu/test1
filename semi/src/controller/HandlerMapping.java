@@ -44,21 +44,25 @@ public class HandlerMapping {
 			controller = new DeleteReplyController();
 		} else if(command.equals("updateReply")){
 			controller = new UpdateReplyController();
+		} else if(command.equals("forgetId")){
+			controller= new ForgetIdController();
 		} else if(command.equals("forgetpassword")){
 			controller = new ForgetPasswordController();
 		} else if(command.equals("changePassword")){
 			controller = new ChangePasswordController();
+		}else if(command.equals("deletePosting")){
+			controller=new DeletePostingController();
+		}else if(command.equals("updateView")){
+			controller=new UpdateViewController();
+		}else if(command.equals("updatePosting")){
+			controller=new UpdatePostingController();
+		}else if(command.equals("showContentNotHit")){
+			controller=new ShowContentNotHitController();
+		} else if (command.equals("like")) {
+			controller = new LikeCountController();
+		} else if (command.equals("likeCancel")){
+			controller = new LikeCancelController();
 		}
 		return controller;
 	}
 }
-
-
-
-
-
-
-
-
-
-

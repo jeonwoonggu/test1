@@ -16,6 +16,16 @@ public class WriteReplyController implements Controller {
 		HttpSession session = request.getSession();
 		MemberVO mvo = (MemberVO) session.getAttribute("mvo");
 		String no = request.getParameter("brdno"); //게시물 번호
+		String reFlag = request.getParameter("reFlag");
+		int parent = 0;
+		if(reFlag.equals("true")){
+			int reparent = Integer.parseInt(request.getParameter("reparent"));
+			parent = reparent;
+			System.out.println("대댓");
+		}else{ 
+			parent = Integer.parseInt(request.getParameter("parent"));
+		}
+
 		String memberId=null;
 		String nickname=null;
 		int articleId;
@@ -27,7 +37,7 @@ public class WriteReplyController implements Controller {
 			nickname = mvo.getNickName();
 			articleId=Integer.parseInt(no);
 			description = request.getParameter("rememo");
-			ReplyDAO.getInstance().insertNewReply(new ReplyVO(memberId,nickname,articleId,description));
+			ReplyDAO.getInstance().insertNewReply(new ReplyVO(memberId,nickname,articleId,description,parent));
 			url = "redirect:DispatcherServlet?command=showContent&no="+no;
 		}
 		return url;

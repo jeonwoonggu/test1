@@ -22,10 +22,19 @@
 	$(document).ready(function(){
 		$("#searchbtn").click(function(){
 			if($("#searchword").val()==""){
-				alert("검색어 입력");
+				alert("검색어를 입력하세요");
 			}else{
-				location.href="${pageContext.request.contextPath}/DispatcherServlet?command=search&word="+$("#searchword").val()
+				if($("#selectWord").val()==""){
+					alert("카테고리를 선택하세요");
+				}else{
+				location.href="${pageContext.request.contextPath}/DispatcherServlet?command=search&word="+$("#searchword").val()+"&selectWord="+$("#selectWord").val()			
+				}
 			}
+		});
+	});
+	$(document).ready(function(){
+		$("#selectForm").change(function(){
+			$("#selectWord").val($(this).val());
 		});
 	});
 </script>
@@ -37,11 +46,18 @@
 	border-width: 3px;
 	border-style: solid;
 	text-align: center;
-	margin-left: 20%;
 	font-size: 20px;
 	vertical-align: middle;
 }
-
+.selectForm {
+	height: 40px;
+	width: 70px;
+	border-color: #FFDB45;
+	border-width: 3px;
+	border-style: solid;
+	margin-left: 15%;
+	vertical-align: middle;
+}
 .navbar-nav  li a:hover {
       background-color: #ffd100 !important;
   }
@@ -53,9 +69,17 @@
 <body>
 	<div class="page-header">
 	<form name="searchForm">
+		<input type="hidden" id="selectWord" name ="selectWord" value=>
 		<a href="${pageContext.request.contextPath}/index.jsp">
 		<img src="${pageContext.request.contextPath}/img/logo.png" width="200"
 			align="middle" style="margin-left: 5%"></a>
+		<select class="selectForm" id="selectForm">
+			<option value="">--------</option>
+			<option value="번호"> 번호 </option>
+			<option value="카테고리"> 카테고리 </option>
+			<option value="제목"> 제목 </option>
+			<option value="작성자"> 작성자 </option>
+		</select>
 		<input type="text" id="searchword" class="searchForm" value="">
 		<img src="${pageContext.request.contextPath}/img/searching.jpg" id="searchbtn" width="50px" align="middle" style="margin-bottom: 2px;">
 		<c:choose>
@@ -72,7 +96,6 @@
 					<ul class="nav navbar-nav navbar-right">
 						<li><a href="${pageContext.request.contextPath}/DispatcherServlet?command=myInfo">${sessionScope.mvo.name}님</a></li>
 						<li><a href="javascript:logout()">로그아웃</a></li>
-						<li><a href="${pageContext.request.contextPath}/member/deleteMember.jsp">회원탈퇴</a></li>
 					</ul>
 				</div>
 			</c:otherwise>

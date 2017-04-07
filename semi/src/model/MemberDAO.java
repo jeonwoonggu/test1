@@ -187,7 +187,7 @@ public class MemberDAO {
 		MemberVO passVO = null;
 		try {
 			con = getConnection();
-			String sql = "select member_id,password,name,nickname from alba_member where member_id=? and name=? and residentnumber=? and tel=?";
+			String sql = "select member_id,password,name,nickname,deletemember from alba_member where member_id=? and name=? and residentnumber=? and tel=? and deletemember='true'";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, vo.getMember_Id());
 			pstmt.setString(2, vo.getName());
@@ -195,7 +195,7 @@ public class MemberDAO {
 			pstmt.setString(4, vo.getTel());
 			rs = pstmt.executeQuery();
 			if(rs.next()){
-				passVO = new MemberVO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
+					passVO = new MemberVO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
 			}
 		} finally {
 			closeAll(rs, pstmt, con);
@@ -214,11 +214,32 @@ public class MemberDAO {
 			pstmt.setString(1, password);
 			pstmt.setString(2, memberId);
 			pstmt.executeUpdate();
-
 		} finally {
 			closeAll(pstmt, con);
+		}
+	}
+	public String forgetId(String name,String residentNumber) throws SQLException {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String id=null;
+		try {
+			con = getConnection();
+			String sql = "select member_id,deletemember from alba_member where name=? and residentnumber=? and deletemember='true'";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1,name );
+			pstmt.setString(2,residentNumber);
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+					id=rs.getString(1);
+			}
+		} finally {
+			closeAll(rs, pstmt, con);
 
 		}
-
+		return id;
 	}
+
+
+
 }

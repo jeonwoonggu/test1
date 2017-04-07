@@ -17,13 +17,14 @@ public class SearchController implements Controller {
 		int totalCount=BoardDAO.getInstance().getTotalContentCount();
 		String word = request.getParameter("word");
 		String pno=request.getParameter("pageNo");
+		String opt=request.getParameter("selectWord");
 		PagingBean pagingBean=null;
 		if(pno==null){
 			pagingBean=new PagingBean(totalCount);
 		}else{
 			pagingBean=new PagingBean(totalCount,Integer.parseInt(pno));
 		}
-		ArrayList<BoardVO> list=BoardDAO.getInstance().getSearchPostingList(pagingBean,word);
+		ArrayList<BoardVO> list=BoardDAO.getInstance().getSearchPostingList(pagingBean,word,opt);
 		ListVO listVO=new ListVO(list,pagingBean);
 		request.setAttribute("lvo", listVO);
 		return "board/list.jsp";

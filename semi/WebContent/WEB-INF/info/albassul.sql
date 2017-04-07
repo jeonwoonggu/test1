@@ -1,11 +1,18 @@
 drop sequence board_no_seq;
+drop sequence reply_id_seq;
 
 create sequence board_no_seq nocache;
+create sequence reply_id_seq;
 
 drop table alba_board cascade constraints;
 drop table alba_member cascade constraints;
 drop table alba_likes cascade constraints;
 drop table alba_reply cascade constraints;
+
+select * from alba_member;
+select * from alba_board;
+select * from ALBA_REPLY;
+
 
 create table alba_member(
    member_id varchar2(100) primary key,
@@ -19,12 +26,6 @@ create table alba_member(
    deletemember varchar2(100) default 'true'
 )
 
-insert into alba_member(member_id,password,name,residentnumber,gender,nickname,tel,address)
- values('java','1234','아이유','19930516','woman','IU','031','판교');
-insert into alba_member(member_id,password,name,residentnumber,gender,nickname,tel,address)
- values('ajax','abcd','강동원','19810118','man','mr.kang','02','강남');
-
-select * from alba_member;
 
 create table alba_board(
 	board_no number primary key,
@@ -34,9 +35,13 @@ create table alba_board(
 	time_posted date not null,
 	hits number default 0,
 	likes number default 0,
+	job varchar2(100) not null,
+	startdate varchar2(100) not null,
+	enddate varchar2(100) not null,
 	member_id varchar2(100) not null,
 	constraint alba_board_fk foreign key(member_id) references alba_member(member_id)
 )
+
 
 create table alba_likes(
    member_id varchar2(100) not null,
@@ -44,10 +49,7 @@ create table alba_likes(
    board_no number not null,
    constraint likes_no foreign key(board_no) references alba_board(board_no)
 )
-insert into alba_likes values('hoe0124',1);
-select * from alba_likes;
-select count(*) from alba_likes where member_id='hoe0124' and board_no=2;
-update alba_board set likes=1 where board_no=1
+
 
 create table alba_reply(
  reply_id number  primary key, -- 댓글 번호
@@ -60,39 +62,14 @@ create table alba_reply(
  parent_id number default 0, -- 부모 댓글 표시
  depth number default 0, -- 몇대손인지 depth
  order_id number default 1, -- 게시물 기준으로 몇번째인지
- constraint fk_article_no foreign key(article_id) references alba_board(board_no),
+ constraint fk_article_no foreign key(article_id) references alba_board(board_no) ON DELETE CASCADE,
  constraint fk_member_id foreign key(member_id) references alba_member(member_id) -- 외래키 추가
 )
-drop table alba_reply;
-select * from ALBA_REPLY;
-create sequence reply_id_seq;
-drop sequence reply_id_seq;
--- 새 댓글 쓸 때 
-insert into alba_reply(reply_id,article_id,member_id,nickname,reply_date,description,group_id)
-values(reply_id_seq.nextval,2,'garin','가리니',sysdate,'댓글 테스트입니다',reply_id_seq.nextval);
 
-insert into alba_reply(reply_id,article_id,member_id,nickname,reply_date,description,group_id)
-values(reply_id_seq.nextval,2,'garin','가리니',sysdate,'두번째 댓글',reply_id_seq.nextval);
-
-select board_no_seq.nextval from dual;
-
--- 실행하지 마세요 --
-insert into alba_board(board_no,category,title,content,time_posted,member_id) values(board_no_seq.nextval,'추천','치킨','ㅋㅋ',sysdate,'java');
-insert into alba_board(board_no,category,title,content,time_posted,member_id) values(board_no_seq.nextval,'비추천','족발','ㅋㅋ',sysdate,'spring');
-insert into alba_board(board_no,category,title,content,time_posted,member_id) values(board_no_seq.nextval,'추천','닭발','ㅋㅋ',sysdate,'jquery');
-insert into alba_board(board_no,category,title,content,time_posted,member_id) values(board_no_seq.nextval,'비추천','햄버거','ㅋㅋ',sysdate,'ajax');
-insert into alba_board(board_no,category,title,content,time_posted,member_id) values(board_no_seq.nextval,'추천','피자','ㅋㅋ',sysdate,'servlet');
-insert into alba_board(board_no,category,title,content,time_posted,member_id) values(board_no_seq.nextval,'비추천','짬뽕','ㅋㅋ',sysdate,'jsp');
-
-select * from alba_board;
+select r.reply_count 
+from(
+	select article_id, count(*) as reply_count 
+	from alba_reply group by article_id) r, alba_board b 
+where r.article_id = b.board_no and b.board_no=1
 
 commit
-select count(*) from alba_reply where article_id=10;
--- hint 
-/*
-SELECT  리스트 페이지에서 필요한 컬럼 (게시물과 회원 관련 컬럼) FROM(
-	SELECT row_number 이용한  Board SQL
-) b,member m 
-where 조인조건 and between 
-order by 
-*/

@@ -74,6 +74,8 @@ public class BoardDAO {
 					mvo.setNickName("탈퇴회원");
 				}
 				bvo.setMemberVO(mvo);
+				int replycount = this.getReplycount_dao(bvo.getBoard_no());
+				bvo.setReplycount(replycount);
 				list.add(bvo);			
 			}		
 			//System.out.println(list);
@@ -121,7 +123,7 @@ public class BoardDAO {
          con=getConnection();
          StringBuilder sql=new StringBuilder();
          sql.append("select b.title, to_char(b.time_posted,'YYYY.MM.DD  HH24:MI:SS') as time_posted, ");
-         sql.append("b.content, b.hits, b.likes, b.member_id, m.name, m.nickname, m.deletemember ");
+         sql.append("b.content, b.hits, b.likes, b.member_id, m.name, m.nickname, m.deletemember, b.job, b.startdate, b.enddate ");
          sql.append("from alba_board b, alba_member m ");
          sql.append("where b.member_id=m.member_id and b.board_no=?");      
          pstmt=con.prepareStatement(sql.toString());
@@ -135,6 +137,9 @@ public class BoardDAO {
             bvo.setHits(rs.getInt("hits"));
             bvo.setLikes(rs.getInt("likes"));
             bvo.setTimePosted(rs.getString("time_posted"));
+            bvo.setJob(rs.getString("job"));
+            bvo.setStartDate(rs.getString("startdate"));
+            bvo.setEndDate(rs.getString("enddate"));
             MemberVO mvo=new MemberVO();
             mvo.setMember_Id(rs.getString("member_id"));
             mvo.setName(rs.getString("name"));
@@ -183,13 +188,16 @@ public class BoardDAO {
 			con=getConnection();
 			//insert into alba_board(board_no,title,content,id,time_posted) values(board_no_seq.nextval,?,?,?,sysdate)
 			StringBuilder sql=new StringBuilder();
-			sql.append("insert into alba_board(board_no,category,title,content,member_id,time_posted)");
-			sql.append(" values(board_no_seq.nextval,?,?,?,?,sysdate)");			
+			sql.append("insert into alba_board(board_no,category,title,content,member_id, job, startdate, enddate, time_posted)");
+			sql.append(" values(board_no_seq.nextval,?,?,?,?,?,?,?,sysdate)");			
 			pstmt=con.prepareStatement(sql.toString());
 			pstmt.setString(1, vo.getCategory());
 			pstmt.setString(2, vo.getTitle());
 			pstmt.setString(3, vo.getContent());
 			pstmt.setString(4, vo.getMemberVO().getMember_Id());
+			pstmt.setString(5, vo.getJob());
+			pstmt.setString(6, vo.getStartDate());
+			pstmt.setString(7, vo.getEndDate());
 			pstmt.executeUpdate();			
 			pstmt.close();
 			pstmt=con.prepareStatement("select board_no_seq.currval from dual");
@@ -206,13 +214,13 @@ public class BoardDAO {
 	 * @param board_no
 	 * @throws SQLException
 	 */
-	public void deletePosting(int board_no) throws SQLException{
+	public void deletePosting(int no) throws SQLException{
 		Connection con=null;
 		PreparedStatement pstmt=null;
 		try{
 			con=getConnection(); 
 			pstmt=con.prepareStatement("delete from alba_board where board_no=?");
-			pstmt.setInt(1, board_no);		
+			pstmt.setInt(1, no);		
 			pstmt.executeUpdate();			
 		}finally{
 			closeAll(pstmt,con);
@@ -228,10 +236,11 @@ public class BoardDAO {
 		PreparedStatement pstmt=null;
 		try{
 			con=getConnection();
-			pstmt=con.prepareStatement("update alba_board set title=?,content=? where board_no=?");
+			pstmt=con.prepareStatement("update alba_board set title=?,content=?, category=? where board_no=?");
 			pstmt.setString(1, vo.getTitle());
 			pstmt.setString(2, vo.getContent());
-			pstmt.setInt(3, vo.getBoard_no());	
+			pstmt.setString(3, vo.getCategory());
+			pstmt.setInt(4, vo.getBoard_no());	
 			pstmt.executeUpdate();			
 		}finally{
 			closeAll(pstmt,con);
@@ -358,7 +367,7 @@ public class BoardDAO {
 		}
 		return list;
 	}
-	public ArrayList<BoardVO> getSearchPostingList(PagingBean pagingBean, String word) throws SQLException{
+	public ArrayList<BoardVO> getSearchPostingList(PagingBean pagingBean, String word, String opt) throws SQLException{
 		ArrayList<BoardVO> list=new ArrayList<BoardVO>();
 		Connection con=null;
 		PreparedStatement pstmt=null;
@@ -366,16 +375,51 @@ public class BoardDAO {
 		try{
 			con=getConnection(); 
 			StringBuilder sql=new StringBuilder();
+			if(opt.equals("번호")){
 			sql.append("SELECT b.board_no,b.category,b.title,b.time_posted,b.hits,b.likes,b.member_id,m.nickName,m.deletemember FROM(");
 			sql.append("SELECT row_number() over(order by board_no desc) as rnum,board_no,category,title,");
 			sql.append("to_char(time_posted,'YYYY.MM.DD') as time_posted,hits,likes,member_id FROM ");
 			sql.append("alba_board");
-			sql.append(") b,alba_member m where b.member_id=m.member_id and title LIKE ? and rnum between ? and ? ");
+			sql.append(") b,alba_member m where b.member_id=m.member_id and board_no LIKE ? and rnum between ? and ? ");
 			sql.append(" order by board_no desc");
 			pstmt=con.prepareStatement(sql.toString());
 			pstmt.setString(1, "%" + word + "%");
 			pstmt.setInt(2, pagingBean.getStartRowNumber());
 			pstmt.setInt(3, pagingBean.getEndRowNumber());
+			}else if(opt.equals("카테고리")){
+				sql.append("SELECT b.board_no,b.category,b.title,b.time_posted,b.hits,b.likes,b.member_id,m.nickName,m.deletemember FROM(");
+				sql.append("SELECT row_number() over(order by board_no desc) as rnum,board_no,category,title,");
+				sql.append("to_char(time_posted,'YYYY.MM.DD') as time_posted,hits,likes,member_id FROM ");
+				sql.append("alba_board");
+				sql.append(") b,alba_member m where b.member_id=m.member_id and category LIKE ? and rnum between ? and ? ");
+				sql.append(" order by board_no desc");
+				pstmt=con.prepareStatement(sql.toString());
+				pstmt.setString(1, word);
+				pstmt.setInt(2, pagingBean.getStartRowNumber());
+				pstmt.setInt(3, pagingBean.getEndRowNumber());	
+			}else if(opt.equals("제목")){
+				sql.append("SELECT b.board_no,b.category,b.title,b.time_posted,b.hits,b.likes,b.member_id,m.nickName,m.deletemember FROM(");
+				sql.append("SELECT row_number() over(order by board_no desc) as rnum,board_no,category,title,");
+				sql.append("to_char(time_posted,'YYYY.MM.DD') as time_posted,hits,likes,member_id FROM ");
+				sql.append("alba_board");
+				sql.append(") b,alba_member m where b.member_id=m.member_id and title LIKE ? and rnum between ? and ? ");
+				sql.append(" order by board_no desc");
+				pstmt=con.prepareStatement(sql.toString());
+				pstmt.setString(1, "%" + word + "%");
+				pstmt.setInt(2, pagingBean.getStartRowNumber());
+				pstmt.setInt(3, pagingBean.getEndRowNumber());	
+			}else if(opt.equals("작성자")){
+				sql.append("SELECT b.board_no,b.category,b.title,b.time_posted,b.hits,b.likes,b.member_id,m.nickName,m.deletemember FROM(");
+				sql.append("SELECT row_number() over(order by board_no desc) as rnum,board_no,category,title,");
+				sql.append("to_char(time_posted,'YYYY.MM.DD') as time_posted,hits,likes,member_id FROM ");
+				sql.append("alba_board");
+				sql.append(") b,alba_member m where b.member_id=m.member_id and nickName LIKE ? and rnum between ? and ? ");
+				sql.append(" order by board_no desc");
+				pstmt=con.prepareStatement(sql.toString());
+				pstmt.setString(1, "%" + word + "%");
+				pstmt.setInt(2, pagingBean.getStartRowNumber());
+				pstmt.setInt(3, pagingBean.getEndRowNumber());	
+			}
 			rs=pstmt.executeQuery();	
 			//목록에서 게시물 content는 필요없으므로 null로 setting
 			//select board_no,title,time_posted,hits,id,name
@@ -402,5 +446,80 @@ public class BoardDAO {
 			closeAll(rs,pstmt,con);
 		}
 		return list;
+	}
+	/**
+	 * 좋아요수 증가 
+	 * @param board_no
+	 * @throws SQLException
+	 */
+	public void updateLikes(int board_no) throws SQLException{
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		try{
+			con=getConnection(); 
+			String sql="update alba_board set likes=likes+1 where board_no=?";
+			pstmt=con.prepareStatement(sql);
+			pstmt.setInt(1, board_no);	
+			pstmt.executeUpdate();			
+		}finally{
+			closeAll(pstmt,con);
+		}
+	}
+	
+	/**
+	 * 좋아요수 감소 
+	 * @param board_no
+	 * @throws SQLException
+	 */
+	public void updateLikesCancel(int board_no) throws SQLException{
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		try{
+			con=getConnection(); 
+			String sql="update alba_board set likes=likes-1 where board_no=?";
+			pstmt=con.prepareStatement(sql);
+			pstmt.setInt(1, board_no);	
+			pstmt.executeUpdate();			
+		}finally{
+			closeAll(pstmt,con);
+		}
+	}
+	public int getLikesNum(int board_no) throws SQLException{
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		int likes=0;
+		try{
+			con=getConnection(); 
+			String sql="select likes from alba_board where board_no=?";
+			pstmt=con.prepareStatement(sql);
+			pstmt.setInt(1, board_no);
+			rs=pstmt.executeQuery();	
+			if(rs.next()){		
+				likes=rs.getInt(1);
+			}		
+		}finally{
+			closeAll(rs,pstmt,con);
+		}
+		return likes;
+	}
+	public int getReplycount_dao(int board_no) throws SQLException {//리스트 표시 시 댓글 수 받아오기
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int count = 0;
+		try {
+			con = getConnection();
+			String sql = "select r.reply_count from(select article_id, count(*) as reply_count from alba_reply group by article_id)r, alba_board b where r.article_id = b.board_no and b.board_no=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, board_no);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				count = rs.getInt(1);
+			}
+		} finally {
+			closeAll(rs, pstmt, con);
+		}
+		return count;
 	}
 }

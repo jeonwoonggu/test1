@@ -19,13 +19,19 @@ public class WriteController implements Controller {
 		String category= request.getParameter("category");
 		String title = request.getParameter("title");
 		String content = request.getParameter("content");
+		String job = request.getParameter("job");
+		String startDate = request.getParameter("startdate");
+		String endDate = request.getParameter("enddate");
 		BoardVO bvo=new BoardVO();
 		bvo.setCategory(category);
 		bvo.setTitle(title);
 		bvo.setContent(content);
+		bvo.setJob(job);
+		bvo.setStartDate(startDate);
+		bvo.setEndDate(endDate);
 		bvo.setMemberVO((MemberVO)session.getAttribute("mvo"));		
 		BoardDAO.getInstance().posting(bvo);
-		String path="redirect:DispatcherServlet?command=showContent&no="+bvo.getBoard_no();
+		String path="redirect:DispatcherServlet?command=showContentNotHit&no="+bvo.getBoard_no();
 		return path;
 	}
 }
