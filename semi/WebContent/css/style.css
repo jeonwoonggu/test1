@@ -76,3 +76,10 @@
 	width:50px;
 }
 
+.popup_btn{
+	background: #ffd100;
+	border:none;
+	box-shadow: none;
+	border-radius: 5px;
+	font-weight: bold;
+}

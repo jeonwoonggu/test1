@@ -14,32 +14,43 @@
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-function content_submit() {
-	if (confirm("글을 등록하시겠습니까?")) {
-		if($("#category").val()==""){
-			alert("카테고리를 선택하세요");
+	function content_submit() {
+		var startDate = $("#startdate").val();
+        var startDateArr = startDate.split('-');
+        var endDate = $("#enddate").val();
+        var endDateArr = endDate.split('-');
+        var startDateComp = new Date(startDateArr[0], startDateArr[1], startDateArr[2]);
+        var endDateComp = new Date(endDateArr[0], endDateArr[1], endDateArr[2]);
+        
+		if (confirm("글을 등록하시겠습니까?")) {
+			if($("#category").val()==""){
+				alert("카테고리를 선택하세요");
+				return false;
+			}else if($("#startdate").val()==""){
+				alert("근무 시작일을 선택하세요");
+				return false;
+			}else if($("#job").val()==""){
+				alert("직종을 선택하세요");
+				return false;
+			}else if($("#enddate").val()==""){
+				alert("근무 종료일을 선택하세요");
+				return false;
+			}else if($("#content").val()==""){
+				alert("내용을 입력하세요");
+				return false;
+			}else if(startDateComp.getTime() > endDateComp.getTime()){
+				alert("근무시작일과 근무종료일을 확인해주세요");
+				return false;
+			}else{
+				document.write_form.submit();
+			}			
+		} else {
 			return false;
-		}else if($("#startdate").val()==""){
-			alert("근무 시작일을 선택하세요");
-			return false;
-		}else if($("#job").val()==""){
-			alert("직종을 선택하세요");
-			return false;
-		}else if($("#enddate").val()==""){
-			alert("근무 종료일을 선택하세요");
-			return false;
-		}else if($("#content").val()==""){
-			alert("내용을 입력하세요");
-			return false;
-		}else{
-			document.write_form.submit();
 		}
-	} else {
-		return false;
 	}
-}
 	function cancel() {
 		document.write_form.reset();
+		//history.back();  -- 취소하면 이전 페이지로???
 	}
 	$(document).ready(function(){
 		$("#selcate").change(function(){
@@ -51,8 +62,8 @@ function content_submit() {
 <body>
 	<jsp:include page="/template/header.jsp" />
 	<br>
-	<form action="${pageContext.request.contextPath }/DispatcherServlet"
-		method="post" name="write_form">
+	<form action="${pageContext.request.contextPath }/DispatcherServlet?command=write"
+		method="post" name="write_form" enctype="multipart/form-data">
 		<input type="hidden" name="command" value="write">
 		<input type="hidden" name="id" value="${sessionScope.mvo.member_Id }">
 		<input type="hidden" id="category" name ="category" value=>
@@ -90,6 +101,11 @@ function content_submit() {
 								</select>
 							&nbsp;&nbsp;&nbsp;근무 시작일&nbsp;&nbsp;&nbsp;&nbsp;<input type="date" name="startdate" id="startdate">
 							&nbsp;&nbsp;&nbsp;근무 종료일&nbsp;&nbsp;&nbsp;&nbsp;<input type="date" name="enddate" id="enddate"></td>
+						</tr>
+						<tr>
+							<td colspan="4" align="left">&nbsp;&nbsp; 
+ 									<input type="file" name="m_file">
+							</td>
 						</tr>
 						<tr>
 							<td colspan="4" align="left">&nbsp;&nbsp; 

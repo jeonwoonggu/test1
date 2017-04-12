@@ -62,7 +62,19 @@ public class HandlerMapping {
 			controller = new LikeCountController();
 		} else if (command.equals("likeCancel")){
 			controller = new LikeCancelController();
-		}
+		} else if (command.equals("boardReport")){
+			controller = new BoardReportController();
+		} else if (command.equals("adminMemberList")){
+			controller = new AdminMemberListController();
+		} else if (command.equals("adminDeleteMember")){
+			controller = new AdminDeleteMemberController();
+		} else if (command.equals("adminBoardList")){
+			controller = new AdminBoardListController();
+		} else if (command.equals("adminBoardDelete")){
+			controller = new AdminBoardDeleteController();
+		} else if (command.equals("adminReportList")){
+			controller = new AdminReportListController();
+		} 
 		return controller;
 	}
 }

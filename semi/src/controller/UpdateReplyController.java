@@ -13,10 +13,8 @@ public class UpdateReplyController implements Controller {
 		String rememo = request.getParameter("rememo");
 		String brdno = request.getParameter("brdno");
 		String reno = request.getParameter("reno");
-		System.out.println(reno+" "+brdno+" "+rememo);
 		ReplyVO vo = new ReplyVO(Integer.parseInt(reno), rememo);
 		ReplyDAO.getInstance().updateReply(vo);
-		System.out.println("UpdateReplyController");
 		return "redirect:DispatcherServlet?command=showContent&no="+brdno;
 	}
 

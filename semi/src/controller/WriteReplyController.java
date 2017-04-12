@@ -21,7 +21,6 @@ public class WriteReplyController implements Controller {
 		if(reFlag.equals("true")){
 			int reparent = Integer.parseInt(request.getParameter("reparent"));
 			parent = reparent;
-			System.out.println("대댓");
 		}else{ 
 			parent = Integer.parseInt(request.getParameter("parent"));
 		}
@@ -38,7 +37,7 @@ public class WriteReplyController implements Controller {
 			articleId=Integer.parseInt(no);
 			description = request.getParameter("rememo");
 			ReplyDAO.getInstance().insertNewReply(new ReplyVO(memberId,nickname,articleId,description,parent));
-			url = "redirect:DispatcherServlet?command=showContent&no="+no;
+			url = "redirect:DispatcherServlet?command=showContentNotHit&no="+no+"&memberId="+mvo.getMember_Id();
 		}
 		return url;
 	}

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
@@ -55,6 +56,42 @@ public class MemberDAO {
 			closeAll(rs, pstmt, con);
 		}
 		return vo;
+	}
+	public boolean adminLogin(String memberId, String password) throws SQLException {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		boolean flag =false;
+		try {
+			con = getConnection();
+			String sql = "select count(*) from alba_admin where admin_id=? and admin_pass=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, memberId);
+			pstmt.setString(2, password);
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				if(rs.getInt(1)>0){
+					flag=true;
+				}
+			}
+		} finally {
+			closeAll(rs, pstmt, con);
+		}
+		return flag;
+	}
+	public void adminDeleteMember(String memberId) throws SQLException {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			con = getConnection();
+			String sql = "update alba_member set deletemember='false' where member_id=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, memberId);
+			pstmt.executeUpdate();
+		} finally {
+			closeAll(pstmt, con);
+		}
+
 	}
 
 	public String findMemberId(String memberId) throws SQLException {
@@ -240,6 +277,35 @@ public class MemberDAO {
 		return id;
 	}
 
+	//관리자 - 회원목록 전체 출력
+	public ArrayList<MemberVO> getMemberAll() throws SQLException{
+		ArrayList<MemberVO> list = new ArrayList<MemberVO>();
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			String sql = "select * from alba_member";
+			con = getConnection();
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()){
+				MemberVO dto =  new MemberVO();
+				dto.setMember_Id(rs.getString(1));
+				dto.setName(rs.getString(2));
+				dto.setAddress(rs.getString(3));
+				dto.setTel(rs.getString(4));
+				dto.setResidentNumber(rs.getString(5));
+				dto.setGender(rs.getString(6));
+				dto.setPassword(rs.getString(7));
+				dto.setNickName(rs.getString(8));
+				dto.setDeleteMember(rs.getString(9));
+				list.add(dto);
+			}
+		} finally {
+			closeAll(rs, pstmt, con);
 
+		}
+		return list;
+	}
 
 }

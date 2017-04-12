@@ -26,9 +26,15 @@ public class ShowContentController implements Controller {
 		replyList = ReplyDAO.getInstance().getAllReplyList(no);
 		// 공감 여부 확인
 		boolean flag=LikeDAO.getInstance().likesIdCheck(id, no);
+		// 사진 불러오기
+		String board_imgsrc = BoardDAO.getInstance().imgReload(no);
+		
 		request.setAttribute("replyList", replyList);
 		request.setAttribute("bvo", vo);
 		request.setAttribute("likeCheck", flag);
+		request.setAttribute("imgsrc", board_imgsrc);
+		// System.out.println("사진 존재여부"+board_imgsrc);
+		
 		return "board/detail.jsp";
 	}
 }

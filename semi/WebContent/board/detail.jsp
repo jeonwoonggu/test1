@@ -1,21 +1,24 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+   href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath}/css/style.css">
+   href="${pageContext.request.contextPath}/css/style.css">
 <script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+   src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 <script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+   src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript">
+function reportWindow(){
+	window.open("${pageContext.request.contextPath}/board/report_popup.jsp?brdno=${requestScope.bvo.board_no }&memid=${sessionScope.mvo.member_Id}","popup",
+	"resizable=true,toolbar=no,width=500,height=300,left=300,top=150");
+}
 // 후기 상세 목록,수정,삭제
 function sendList(){
 	location.href="${pageContext.request.contextPath}/index.jsp";
@@ -200,7 +203,7 @@ function fn_replyReplySave(){
 	<jsp:include page="/template/header.jsp" />
 	<div class="container">
 		<div class="row">
-			<table id="test" class="table table-hover">
+			<table id="test" class="table">
 				<thead>
 					<tr>
 						<th colspan="5">제목 : ${requestScope.bvo.title}</th>
@@ -220,9 +223,20 @@ function fn_replyReplySave(){
 				<tbody>
 					<tr>
 						<td colspan="6">
-							<div style="overflow: auto; width: 100%; height: 300px;">
+							<c:set var="imgsrc" value="${ requestScope.imgsrc }" />
+							<c:if test="${fn:contains(imgsrc,'.')}">
+								<img src="${pageContext.request.contextPath}/${ requestScope.imgsrc }"/>
+							</c:if>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6">
+							<div style="overflow-y: auto; width: 100%; min-height:100px">
 								<pre>${requestScope.bvo.content}</pre>
 							</div>
+							<c:if test="${sessionScope.mvo.member_Id !=null}">
+								<div><a href="#" onclick="reportWindow()">신고</a></div>
+							</c:if>
 						</td>
 					</tr>
 					<tr>

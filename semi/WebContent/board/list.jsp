@@ -1,3 +1,4 @@
+<%@page import="model.ReportDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -13,26 +14,29 @@
 <title>Insert title here</title>
 </head>
 <body>
+<input type="hidden" name="ccate" value="${requestScope.ccate}">
 	<jsp:include page="/template/header.jsp"/>
 	<div class="container">
 		<div class="table-responsive">
 			<table class="table">
 				<thead>
 					<tr>
-						<th class="no">번호</th>
-						<th class="category"><a href="${pageContext.request.contextPath}/DispatcherServlet?command=categoryList&cate=추천">추천</a>/<a href="${pageContext.request.contextPath}/DispatcherServlet?command=categoryList&cate=비추천">비추천</a></th>
-						<th class="title">제목</th>
-						<th class="name">작성자</th>
-						<th class="date"><a href="${pageContext.request.contextPath}/DispatcherServlet?command=list">작성일▼</a></th>
-						<th class="hits"><a href="${pageContext.request.contextPath}/DispatcherServlet?command=hitsList">조회▼</a></th>
-						<th class="likes"><a href="${pageContext.request.contextPath}/DispatcherServlet?command=sympathyList">공감▼</a></th>
+						<th> 번호 </th>
+						<th><a href="${pageContext.request.contextPath}/DispatcherServlet?command=categoryList&cate=추천">추천</a>/<a href="${pageContext.request.contextPath}/DispatcherServlet?command=categoryList&cate=비추천">비추천</a>/<a href="${pageContext.request.contextPath}/DispatcherServlet?command=list">전체보기</a></th>
+						<th> 업종 </th>
+						<th> 제목 </th>
+						<th> 작성자 </th>
+						<th><a href="${pageContext.request.contextPath}/DispatcherServlet?command=list">작성일▼</a></th>
+						<th><a href="${pageContext.request.contextPath}/DispatcherServlet?command=hitsList">조회▼</a></th>
+						<th><a href="${pageContext.request.contextPath}/DispatcherServlet?command=sympathyList">공감▼</a></th>
 					</tr>
 				</thead>
 				<tbody>
-			<c:forEach var="bvo" items="${requestScope.lvo.list}">				
+			<c:forEach var="bvo" items="${requestScope.lvo.list}">			
 			<tr>
 			    <td>${bvo.board_no }</td>
-			    <td>${bvo.category }</td>		
+			    <td>${bvo.category }</td>
+			    <td>${bvo.job }</td>		
 				<td>
 				<c:choose>
 				<c:when test="${sessionScope.mvo!=null}">
@@ -60,7 +64,7 @@
 	<img src="${pageContext.request.contextPath}/img/write.jpg" border="0" width="60px" ></a>
 	</c:if>
 	<br><br>	
-<p class="paging" style="margin-left: 50%">
+	<p class="paging" style="margin-left: 50%">
 	<c:set var="pb" value="${requestScope.lvo.pagingBean}"></c:set>
 	<c:if test="${pb.previousPageGroup}">
 	<a href="DispatcherServlet?command=list&pageNo=${pb.startPageOfPageGroup-1}">
@@ -71,7 +75,7 @@
 	end="${pb.endPageOfPageGroup}">
 	<c:choose>
 	<c:when test="${pb.nowPage!=i}">
-	<a href="DispatcherServlet?command=list&pageNo=${i}">${i}</a> 
+	<a href="DispatcherServlet?command=${requestScope.kindList}&cate=${requestScope.cate }&pageNo=${i}">${i}</a> 
 	</c:when>
 	<c:otherwise>
 	${i}
@@ -80,7 +84,7 @@
 	&nbsp;
 	</c:forEach>	 
 	<c:if test="${pb.nextPageGroup}">
-	<a href="DispatcherServlet?command=list&pageNo=${pb.endPageOfPageGroup+1}">
+	<a href="DispatcherServlet?command=${requestScope.kindList}&pageNo=${pb.endPageOfPageGroup+1}">
 	▶<!-- <img src="img/right_arrow_btn.gif"> --></a>
 	</c:if>
 	</p>

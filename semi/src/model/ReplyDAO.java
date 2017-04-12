@@ -153,7 +153,6 @@ public class ReplyDAO {
 			int reno = getNextReplyId();
 			int group = 1;
 			int depth,order_id;
-			System.out.println(parent+ "  reno:"+reno);
 			if(parent ==0){ // 글에 댓글 달때 
 				group = reno;
 				depth = 0;

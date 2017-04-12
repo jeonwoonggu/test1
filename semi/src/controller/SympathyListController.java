@@ -25,6 +25,7 @@ public class SympathyListController implements Controller {
 		ArrayList<BoardVO> list=BoardDAO.getInstance().getSympathyList(pagingBean);
 		ListVO listVO=new ListVO(list,pagingBean);
 		request.setAttribute("lvo", listVO);
+		request.setAttribute("kindList", "sympathyList");
 		return "board/list.jsp";
 	}
 

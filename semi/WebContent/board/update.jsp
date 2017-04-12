@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -39,7 +41,7 @@
 <body>
 	<jsp:include page="/template/header.jsp" />
 	<br>
-	<form method="post" action="${pageContext.request.contextPath}/DispatcherServlet" name="update_form">
+	<form method="post" action="${pageContext.request.contextPath}/DispatcherServlet?command=updatePosting" name="update_form" enctype="multipart/form-data">
 	<input type="hidden"  name="command"  value="updatePosting"></input>
 	<input type="hidden"  name="no"  value=${bvo.board_no }>
 	<input type="hidden" id="category" name ="category" value=>
@@ -59,8 +61,22 @@
 								required="required" style="margin-left: 1%" value="${bvo.title }"></td>
 						</tr>
 						<tr>
-							<td style="height: 35px;">닉네임</td>
+							<td style="height: 35px;">&nbsp;&nbsp;닉네임</td>
 								<td>${sessionScope.mvo.nickName }</td>
+						</tr>
+						<tr>
+						<td colspan="4">
+							<c:set var="imgsrc" value="${ requestScope.imgsrc }" />
+							<c:choose >
+								<c:when test="${fn:contains(imgsrc,'.')}">
+									&nbsp;&nbsp;&nbsp;<input size="30px" type="text" readonly="readonly" name="img_src" value="${ requestScope.imgsrc }"> (사진을 추가시 기존사진은 삭제됩니다.)
+									<input style="margin-left: 2%" type="file" name="m_file">
+								</c:when>
+								<c:otherwise>
+									<input style="margin-left: 2%" type="file" name="m_file">
+								</c:otherwise>
+							</c:choose>
+						</td>
 						</tr>
 						<tr>
 							<td colspan="4" align="left">&nbsp;&nbsp; <textarea

@@ -24,6 +24,7 @@ public class ListController  implements Controller {
 		}
 		ArrayList<BoardVO> list=BoardDAO.getInstance().getPostingList(pagingBean);
 		ListVO listVO=new ListVO(list,pagingBean);
+		request.setAttribute("kindList", "list");
 		request.setAttribute("lvo", listVO);
 		return "board/list.jsp";
 	}

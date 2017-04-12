@@ -14,20 +14,22 @@ public class SearchController implements Controller {
 
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		int totalCount=BoardDAO.getInstance().getTotalContentCount();
+		//int totalCount=BoardDAO.getInstance().getTotalContentCount();
 		String word = request.getParameter("word");
 		String pno=request.getParameter("pageNo");
-		String opt=request.getParameter("selectWord");
+		String opt=request.getParameter("opt");
+		int searchCount=BoardDAO.getInstance().getSearchCount(word,opt);
+		//System.out.println(searchCount);
 		PagingBean pagingBean=null;
 		if(pno==null){
-			pagingBean=new PagingBean(totalCount);
+			pagingBean=new PagingBean(searchCount);
 		}else{
-			pagingBean=new PagingBean(totalCount,Integer.parseInt(pno));
+			pagingBean=new PagingBean(searchCount,Integer.parseInt(pno));
 		}
 		ArrayList<BoardVO> list=BoardDAO.getInstance().getSearchPostingList(pagingBean,word,opt);
 		ListVO listVO=new ListVO(list,pagingBean);
-		request.setAttribute("lvo", listVO);
-		return "board/list.jsp";
+		request.setAttribute("svo", listVO);
+		return "board/search.jsp";
 	}
 
 }

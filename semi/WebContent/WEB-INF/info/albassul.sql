@@ -8,10 +8,15 @@ drop table alba_board cascade constraints;
 drop table alba_member cascade constraints;
 drop table alba_likes cascade constraints;
 drop table alba_reply cascade constraints;
+drop table alba_report cascade constraints;
+drop table alba_imgupload cascade constraints;
+
 
 select * from alba_member;
 select * from alba_board;
 select * from ALBA_REPLY;
+select * from alba_imgupload;
+select * from alba_report;
 
 
 create table alba_member(
@@ -29,7 +34,7 @@ create table alba_member(
 
 create table alba_board(
 	board_no number primary key,
-	category varchar2(100) not null,
+	category varchar2(100) not null,	
 	title varchar2(100) not null,
     content clob not null,
 	time_posted date not null,
@@ -47,9 +52,16 @@ create table alba_likes(
    member_id varchar2(100) not null,
    constraint likes_id foreign key(member_id) references alba_member(member_id),
    board_no number not null,
-   constraint likes_no foreign key(board_no) references alba_board(board_no)
+   constraint likes_no foreign key(board_no) references alba_board(board_no) ON DELETE CASCADE
 )
 
+create table alba_report(
+   member_id varchar2(100) not null,
+   constraint report_id foreign key(member_id) references alba_member(member_id),
+   board_no number not null,
+   constraint report_no foreign key(board_no) references alba_board(board_no) ON DELETE CASCADE,
+   content varchar2(100) not null --신고내역
+)
 
 create table alba_reply(
  reply_id number  primary key, -- 댓글 번호
@@ -66,10 +78,15 @@ create table alba_reply(
  constraint fk_member_id foreign key(member_id) references alba_member(member_id) -- 외래키 추가
 )
 
-select r.reply_count 
-from(
-	select article_id, count(*) as reply_count 
-	from alba_reply group by article_id) r, alba_board b 
-where r.article_id = b.board_no and b.board_no=1
-
+create table alba_imgupload(
+	img_no number not null,
+	constraint fk_img_no foreign key(img_no) references alba_board(board_no) ON DELETE CASCADE ,
+	board_imgsrc varchar2(100)
+)
+create table alba_admin(
+admin_id varchar2(100) primary key,
+admin_pass varchar2(100) not null
+)
+insert into alba_admin values('admin','0000');
+select count(*) from alba_admin where admin_id='admin' and admin_pass='0000'
 commit

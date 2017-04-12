@@ -16,8 +16,10 @@ public class UpdateViewController implements Controller {
 			return "redirect:index.jsp";
 		}
 		int no=Integer.parseInt(request.getParameter("no"));
-		BoardVO vo = BoardDAO.getInstance().getPostingByNo(no);		
-		request.setAttribute( "bvo", vo);
+		BoardVO vo = BoardDAO.getInstance().getPostingByNo(no);	
+		String board_imgsrc = BoardDAO.getInstance().imgReload(no);
+		request.setAttribute("bvo", vo);
+		request.setAttribute("imgsrc", board_imgsrc);
 		return "/board/update.jsp";
 	}
 }

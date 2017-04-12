@@ -25,6 +25,7 @@ public class HitsListController implements Controller {
 		ArrayList<BoardVO> list=BoardDAO.getInstance().getHitsList(pagingBean);
 		ListVO listVO=new ListVO(list,pagingBean);
 		request.setAttribute("lvo", listVO);
+		request.setAttribute("kindList", "hitsList");
 		return "board/list.jsp";
 	}
 
